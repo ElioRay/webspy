@@ -2,12 +2,16 @@ package com.elio.webspy;
 
 import java.io.IOException;
 
+import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+
+import com.elio.webspy.domain.IP;
 
 public class WebBrowser {	
 	
@@ -47,6 +51,49 @@ public class WebBrowser {
 
 		}
 		return pageContent;
+	}
+	
+	/**
+	 * 
+	 * @param url
+	 * @param ip
+	 * @return
+	 * @Descritption
+	 *  使用代ip信息爬去网页内容
+	 */
+	public String getHtml(String url, IP ip) {
+		String html = null; //抓取到的网内内容
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		CloseableHttpResponse resp = null;
+		HttpGet httpGet = new HttpGet(url);
+		HttpHost host = new HttpHost(ip.getIpAddress(), ip.getPort());
+		RequestConfig  requestConfig = RequestConfig.custom().setProxy(host)
+				.setConnectionRequestTimeout(3000)
+				.setSocketTimeout(3000).build();
+		httpGet.setConfig(requestConfig);
+		
+		try {
+			resp = httpClient.execute(httpGet);
+			int statusCode = resp.getStatusLine().getStatusCode();
+			
+			if(statusCode == 200) {
+				html = EntityUtils.toString(resp.getEntity(), "UTF-8");
+			}else {
+				
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(resp != null) {
+					resp.close();
+				}
+				httpClient.close();
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return html;
 	}
 
 }
