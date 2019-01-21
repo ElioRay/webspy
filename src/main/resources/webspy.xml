@@ -1,0 +1,5 @@
+<webspy>
+	<!-- 控制任务线程对服务区的访问速度 -->
+	<para-name>thread-interval</para-name>
+	<para-value>1000</para-value>
+</webspy>

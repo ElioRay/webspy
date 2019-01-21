@@ -29,4 +29,9 @@ public class MyRedis {
 			saveIP(ip);
 		}
 	}
+	
+	public IP getIP() {
+		IP ip = (IP) SerializeUtil.unserialize(jedis.lpop("ip-proxy-pool".getBytes()));
+		return ip;
+	}
 }

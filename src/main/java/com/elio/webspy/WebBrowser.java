@@ -62,6 +62,7 @@ public class WebBrowser {
 	 *  使用代ip信息爬去网页内容
 	 */
 	public String getHtml(String url, IP ip) {
+		Logger.debug("当前IP信息" + ip.getIpAddress() + ";端口"+ ip.getPort()+ "使用次数" + ip.getUseCount() + "次");
 		String html = null; //抓取到的网内内容
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		CloseableHttpResponse resp = null;
@@ -78,8 +79,9 @@ public class WebBrowser {
 			
 			if(statusCode == 200) {
 				html = EntityUtils.toString(resp.getEntity(), "UTF-8");
+				ip.addUseCount();
 			}else {
-				
+				return "";
 			}
 		}catch(IOException e) {
 			e.printStackTrace();

@@ -22,6 +22,7 @@ public class IP implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 0L;
+	private boolean isInit = false;
 	private String ipAddress;
 	private int useCount;
 	private String type;
@@ -30,6 +31,15 @@ public class IP implements Serializable{
 	private int port;
 	public String getIpAddress() {
 		return ipAddress;
+	}
+	
+	public void addUseCount() {
+		if(isInit) {
+			useCount++;
+		}else {
+			useCount = 1;
+			isInit = true;
+		}
 	}
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;

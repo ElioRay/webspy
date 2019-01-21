@@ -45,6 +45,7 @@ public class ProxyPool {
 		while(isRunning) {
 			String url;
 			// 当前ip代理池中的ip数量达到一程度开始使用ip代理
+			readWriteLock.readLock().lock();
 			if(proxyList.size() >= beginUseProxyThreshold) {
 				if(ip == null) {
 					ip = proxyList.get((int) Math.random()*proxyList.size());
@@ -52,6 +53,7 @@ public class ProxyPool {
 					ip = proxyList.get((int) Math.random()*proxyList.size());	
 				}
 			}
+			readWriteLock.readLock().unlock();
 			List<IP> ipList = new ArrayList<IP>();
 			synchronized(taskLock) {
 				 if(urls.isEmpty()) {
