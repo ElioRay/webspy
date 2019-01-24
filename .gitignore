@@ -1,7 +1,7 @@
+﻿
+.classpath
 ## eclipes配置文件
 .settings
 .project
 ## target 项目编译候输出文件
 target
-## 本地测试文件
-src/test
