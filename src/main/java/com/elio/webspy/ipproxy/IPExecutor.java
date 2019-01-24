@@ -20,7 +20,7 @@ public class IPExecutor {
 		for(int i = 1; i < 10; i++) {
 			urls.offer("https://www.kuaidaili.com/free/intr/" + i);
 		}
-		for(int i = 1; i <= 10; i++) {
+		for(int i = 2; i <= 10; i++) {
 			Thread thread = new  Thread(new IPGetterThread(urls, pool, taskLock));
 			threads.add(thread);
 			thread.setName("thread" + i);

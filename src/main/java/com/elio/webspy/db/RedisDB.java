@@ -42,7 +42,7 @@ public class RedisDB {
 		
 		public synchronized static Jedis getJedis() {
 			Jedis jedis = new Jedis(ADDR,PORT);
-			//jedis.auth(PASSWORD);
+			jedis.auth(PASSWORD);
 			return jedis;
 		}
 }

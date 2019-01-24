@@ -16,6 +16,8 @@ public class TaskExcutor {
 
 	private List<String> targetInfo;
 	
+	private IParsePageDetail parser = new TTMeijuHtmParser();
+	
 	private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 	
 	public TaskExcutor(Queue<String> taskList, Object taskLock) {
@@ -28,7 +30,7 @@ public class TaskExcutor {
 		// 创建线程执行线程
 		List<Thread> threadList = new ArrayList<>();
 		for(int i = 1; i < 5; i++) {
-			Thread thread = new Thread(new PageInfoThread(lock, taskList, targetInfo));
+			Thread thread = new Thread(new PageInfoThread(lock, taskList, targetInfo, parser));
 			thread.setName("detail-thread" + i);
 			threadList.add(thread);
 			try {

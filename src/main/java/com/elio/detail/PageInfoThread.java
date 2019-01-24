@@ -1,5 +1,6 @@
 package com.elio.detail;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
@@ -13,18 +14,34 @@ public class PageInfoThread implements Runnable{
 	private Queue<String> taskList;
 	private List<String> pageInfoList;
 	private int intervalTime = 200; //每个任务的间隔时间
+	private IParsePageDetail parser;
 	
-	public PageInfoThread(Object taskLock, Queue<String> taskList, List<String> pageInfo) {
+	public PageInfoThread(Object taskLock, Queue<String> taskList, List<String> pageInfo,IParsePageDetail parser ) {
 		this.taskLock = taskLock;
 		this.taskList = taskList;
 		this.pageInfoList = pageInfo;
-		
+		this.parser = parser;
 	}
 	
+
+	
 	public void executeTask(IP ip, String url) {
+		List<String> list = new ArrayList<>();
 		String pageContent = "";
 		WebBrowser browser = new WebBrowser();
 		pageContent = browser.getHtml(url, ip);
+		if(parser != null && pageContent != null){
+			list = parser.parseDetailHtml(pageContent);
+			synchronized(taskLock){
+				pageInfoList.addAll(list);
+				if(pageInfoList.size() > 5){
+					for(String str : pageInfoList){
+						Logger.log(str);
+					}
+				}
+				System.out.println("Current List info:" + pageInfoList.size());
+			}
+		}
 		Logger.log("内容长度" + pageContent.length());
 	}
 	
