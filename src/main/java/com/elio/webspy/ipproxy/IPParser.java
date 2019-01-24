@@ -24,17 +24,18 @@ public class IPParser implements Paraseable{
 		Document doc = Jsoup.parse(html);
 		Element table = doc.select("table[class=table table-bordered table-striped]").first();
 		Logger.debug(table.text());
-		Elements trs = table.select("td");
+		Elements trs = table.select("tr");
 		for(Element tr : trs) {
 			IP ip = new IP();
-			Elements tds = tr.select("td");
+			Elements tds = trs.select("td");
 			ip.setIpAddress(tds.get(0).text().toString());              //ip地址
 			ip.setPort(Integer.parseInt(tds.get(1).text().toString())); //端口
 			ip.setType(tds.get(2).text().toString()); 					// 设置网络类型（高匿）
-			ip.setResponseTime(Double.parseDouble(tds.get(4).text().toString())); // 网络响应时间
-			ip.setFinalValidTime(tds.get(5).text().toString());         //网络验证ip的最后时间
+			ip.setResponseTime(Double.parseDouble(tds.get(5).text().toString().replaceAll("秒", ""))); // 网络响应时间
+			ip.setFinalValidTime(tds.get(6).text().toString());         //网络验证ip的最后时间
 			ipList.add(ip);
 		}
+		Logger.log("获取ip数量"  + ipList.size());
 		return ipList;
 	}
 }

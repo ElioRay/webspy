@@ -6,6 +6,6 @@ import com.elio.webspy.domain.IP;
 
 public abstract class IPFilter {
 	
-	public abstract  List<IP> filter();
+	public abstract  List<IP> filter(List<IP> ipList);
 
 }
