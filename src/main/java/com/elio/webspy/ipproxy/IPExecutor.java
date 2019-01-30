@@ -35,7 +35,10 @@ public class IPExecutor {
 			}
 		}
 		MyRedis myRedis = new MyRedis();
-		
+		synchronized(taskLock) {
+			//通知IP消费线程--> 爬取网页内容
+			taskLock.notifyAll();
+		}
 		myRedis.saveIPList(proxyList);
 		System.out.println("程序运行结束，共获取ip" + proxyList.size());
 	}

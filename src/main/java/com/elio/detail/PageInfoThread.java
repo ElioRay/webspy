@@ -3,6 +3,7 @@ package com.elio.detail;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.elio.webspy.Logger;
 import com.elio.webspy.WebBrowser;
@@ -13,8 +14,9 @@ public class PageInfoThread implements Runnable{
 	private Object taskLock;
 	private Queue<String> taskList;
 	private List<String> pageInfoList;
-	private int intervalTime = 200; //每个任务的间隔时间
+	private int intervalTime = 200; 	//每个任务的间隔时间
 	private IParsePageDetail parser;
+	private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 	
 	public PageInfoThread(Object taskLock, Queue<String> taskList, List<String> pageInfo,IParsePageDetail parser ) {
 		this.taskLock = taskLock;
@@ -25,7 +27,7 @@ public class PageInfoThread implements Runnable{
 	
 
 	
-	public void executeTask(IP ip, String url) {
+	public boolean executeTask(IP ip, String url) {
 		List<String> list = new ArrayList<>();
 		String pageContent = "";
 		WebBrowser browser = new WebBrowser();
@@ -34,15 +36,23 @@ public class PageInfoThread implements Runnable{
 			list = parser.parseDetailHtml(pageContent);
 			synchronized(taskLock){
 				pageInfoList.addAll(list);
-				if(pageInfoList.size() > 5){
-					for(String str : pageInfoList){
-						Logger.log(str);
+				if(pageInfoList.size() > 20){
+					try {
+						readWriteLock.writeLock().lock();
+						for(String str : pageInfoList){
+							Logger.log(str);
+						}
+					}finally {
+						readWriteLock.writeLock().unlock();
 					}
 				}
 				System.out.println("Current List info:" + pageInfoList.size());
 			}
+			return true;
+		}else {
+			System.out.println("任务失败:"+url); 
+			return false;
 		}
-		Logger.log("内容长度" + pageContent.length());
 	}
 	
 	@Override
@@ -62,9 +72,15 @@ public class PageInfoThread implements Runnable{
 				}
 				if(isNeedNewIP) {
 					isNeedNewIP = false;
+					
 					ip = redis.getIP();
+					System.out.println("regain ip" + ip.getIpAddress());
 				}
-				executeTask(ip, currentTaskUrl);
+
+				if(!executeTask(ip, currentTaskUrl)) {
+
+					isNeedNewIP = true;
+				}
 				try {
 					Thread.sleep(intervalTime);
 					System.out.println("控制线程访问速度100ms；" + Thread.currentThread().getName() + "线程恢复执行" );

@@ -83,7 +83,7 @@ public class WebBrowser {
 			}else {
 				return "";
 			}
-		}catch(IOException e) {
+		}catch(IOException  e) {
 			e.printStackTrace();
 		}finally {
 			try {

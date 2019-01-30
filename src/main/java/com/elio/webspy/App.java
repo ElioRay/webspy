@@ -23,7 +23,7 @@ public class App{
 		// 初始化任务队列
 		initList(mainTaskList);
 		// 抓取IP
-		//IPExecutor.execute(taskLock);
+		IPExecutor.execute(taskLock);
 		
 		//把需要抓取的任务队列交给任务的执行者
 		TaskExcutor taskExcutor = new TaskExcutor(mainTaskList,taskLock);

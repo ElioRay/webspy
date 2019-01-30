@@ -9,6 +9,12 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import com.elio.webspy.Logger;
 import com.elio.webspy.domain.IP;
 
+/**
+ * 
+ * @author jinfeng
+ * ProxyPool  每个获取ip线程代理池，每个线程获取到ip之后把ip放入到
+ * ip代理池当中
+ */
 public class ProxyPool {	
 	/**
 	 * 非线程安全变量，用户每个线程完成解析html之后讲获取到的
